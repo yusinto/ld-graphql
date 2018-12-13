@@ -1,10 +1,18 @@
 import { GraphQLServer } from 'graphql-yoga';
 import fetch from 'node-fetch';
 import getFlags from './logic/getFlags';
+import getProjects from './logic/getProjects';
 
 const typeDefs = `
   type Query {
+    projects: [Project!]!
     flags(projKey: String!): [Flag!]!
+  }
+  
+  type Project {
+    name: String!
+    key: String!
+    environments: [Environment!]!
   }
   
   type Flag {
@@ -16,14 +24,23 @@ const typeDefs = `
   }
   
   type Environment {
-    name: String!
+    key: String!
+    name: String
     killSwitch: Boolean
+    color: String
   }
 `;
 
 const resolvers = {
   Query: {
-    flags: async (_, { projKey }, context) => {
+    projects: async () => {
+      try {
+        return getProjects();
+      } catch (e) {
+        return `An error has occurred: ${e}`;
+      }
+    },
+    flags: async (_, { projKey }) => {
       try {
         return getFlags(projKey);
       } catch (e) {
@@ -36,15 +53,11 @@ const resolvers = {
     kind: ({ kind }) => kind,
     key: ({ key }) => key,
     version: ({ _version: version }) => version,
-    environments: async ({ environments }, args, context) => {
-      const result = [];
-      for (let key in environments) {
-        let env = {};
-        env.name = key;
-        env.killSwitch = environments[key].on;
-        result.push(env);
-      }
-      return result;
+    environments: ({ environments }) => {
+      return Object.keys(environments).map(key => ({
+        key,
+        killSwitch: environments[key].on,
+      }));
     },
   },
 };
