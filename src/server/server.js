@@ -2,6 +2,7 @@ import { GraphQLServer } from 'graphql-yoga';
 import fetch from 'node-fetch';
 import getFlags from './logic/getFlags';
 import getProjects from './logic/getProjects';
+import toggleKillSwitch from './logic/toggleKillSwitch';
 
 const typeDefs = `
   type Query {
@@ -29,9 +30,22 @@ const typeDefs = `
     killSwitch: Boolean
     color: String
   }
+  
+  type Mutation {
+    toggleKillSwitch(projKey: String!, envKey: String!, flagKey: String!): Flag
+  }  
 `;
 
 const resolvers = {
+  Mutation: {
+    toggleKillSwitch: async (_, { projKey, envKey, flagKey }) => {
+      try {
+        return toggleKillSwitch(projKey, envKey, flagKey);
+      } catch (e) {
+        return `An error has occurred: ${e}`;
+      }
+    },
+  },
   Query: {
     projects: async () => {
       try {
