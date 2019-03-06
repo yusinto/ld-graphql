@@ -1,5 +1,4 @@
 import { GraphQLServer } from 'graphql-yoga';
-import fetch from 'node-fetch';
 import getFlags from './logic/getFlags';
 import getProjects from './logic/getProjects';
 import toggleKillSwitch from './logic/toggleKillSwitch';
