@@ -1,20 +1,20 @@
-import { GraphQLServer } from 'graphql-yoga';
+import { ApolloServer, gql } from 'apollo-server';
 import getFlags from './logic/getFlags';
 import getProjects from './logic/getProjects';
 import toggleKillSwitch from './logic/toggleKillSwitch';
 
-const typeDefs = `
+const typeDefs = gql`
   type Query {
     projects: [Project!]!
     flags(projKey: String!): [Flag!]!
   }
-  
+
   type Project {
     name: String!
     key: String!
     environments: [Environment!]!
   }
-  
+
   type Flag {
     name: String!
     kind: String!
@@ -22,17 +22,17 @@ const typeDefs = `
     version: Int!
     environments: [Environment!]!
   }
-  
+
   type Environment {
     key: String!
     name: String
     killSwitch: Boolean
     color: String
   }
-  
+
   type Mutation {
     toggleKillSwitch(projKey: String!, envKey: String!, flagKey: String!): Flag
-  }  
+  }
 `;
 
 const resolvers = {
@@ -72,5 +72,9 @@ const resolvers = {
   },
 };
 
-const server = new GraphQLServer({ typeDefs, resolvers });
-server.start(() => console.log('Server is running on localhost:4000'));
+const server = new ApolloServer({ typeDefs, resolvers });
+server.listen().then(() => {
+  console.log('Server is running on localhost:4000');
+});
+
+export default server.httpServer;
