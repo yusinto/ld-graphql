@@ -46,14 +46,14 @@ const resolvers = {
     },
   },
   Query: {
-    projects: async () => {
+    projects: () => {
       try {
         return getProjects();
       } catch (e) {
         return `An error has occurred: ${e}`;
       }
     },
-    flags: async (_, { projKey }) => {
+    flags: (_, { projKey }) => {
       try {
         return getFlags(projKey);
       } catch (e) {
@@ -62,9 +62,6 @@ const resolvers = {
     },
   },
   Flag: {
-    name: ({ name }) => name,
-    kind: ({ kind }) => kind,
-    key: ({ key }) => key,
     version: ({ _version: version }) => version,
     environments: ({ environments }) => {
       return Object.keys(environments).map(key => ({
