@@ -62,6 +62,9 @@ const resolvers = {
     },
   },
   Flag: {
+    name: ({ name }) => name,
+    kind: ({ kind }) => kind,
+    key: ({ key }) => key,
     version: ({ _version: version }) => version,
     environments: ({ environments }) => {
       return Object.keys(environments).map(key => ({
