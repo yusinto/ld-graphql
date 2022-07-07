@@ -23,7 +23,7 @@
     "@babel/polyfill": "^7.4.4",
     "apollo-server": "^2.8.1",
     "graphql": "^14.4.2",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "node-fetch": "^2.6.0",
     "universal-hot-reload": "^3.3.2"
   },
